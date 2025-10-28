@@ -3,9 +3,11 @@ import DeviceSelector from '../components/DeviceSelector';
 
 interface SettingsProps {
   onBack: () => void;
+  selectedDevices: string[];
+  onDeviceSelectionChange: (selected: string[]) => void;
 }
 
-const Settings: React.FC<SettingsProps> = ({ onBack }) => {
+const Settings: React.FC<SettingsProps> = ({ onBack, selectedDevices, onDeviceSelectionChange }) => {
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
         <div className="flex items-center mb-8">
@@ -20,7 +22,7 @@ const Settings: React.FC<SettingsProps> = ({ onBack }) => {
             </button>
             <h1 className="text-2xl font-bold text-white ml-4">Settings</h1>
         </div>
-        <DeviceSelector />
+        <DeviceSelector selectedDevices={selectedDevices} onSelectionChange={onDeviceSelectionChange} />
     </div>
   );
 };

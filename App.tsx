@@ -20,6 +20,7 @@ const App: React.FC = () => {
   const [emotionResult, setEmotionResult] = useState<EmotionResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<Page>('main');
+  const [selectedDevices, setSelectedDevices] = useState<string[]>([]);
 
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -174,7 +175,7 @@ const App: React.FC = () => {
   const isProcessing = status === 'analyzing' || status === 'listening';
 
   if (currentPage === 'settings') {
-    return <Settings onBack={() => setCurrentPage('main')} />;
+    return <Settings onBack={() => setCurrentPage('main')} selectedDevices={selectedDevices} onDeviceSelectionChange={setSelectedDevices} />;
   }
 
   return (

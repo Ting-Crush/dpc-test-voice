@@ -19,16 +19,23 @@ interface Device {
   }[];
 }
 
-const DeviceSelector: React.FC = () => {
+interface DeviceSelectorProps {
+    selectedDevices: string[];
+    onSelectionChange: (selected: string[]) => void;
+}
+
+const DeviceSelector: React.FC<DeviceSelectorProps> = ({ selectedDevices, onSelectionChange }) => {
   const [devices, setDevices] = useState<Device[]>([]);
-  const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
 
   useEffect(() => {
     setDevices(deviceProfiles.deviceProfiles);
   }, []);
 
-  const handleDeviceSelect = (device: Device) => {
-    setSelectedDevice(device);
+  const handleDeviceSelect = (deviceId: string) => {
+    const newSelection = selectedDevices.includes(deviceId)
+      ? selectedDevices.filter(id => id !== deviceId)
+      : [...selectedDevices, deviceId];
+    onSelectionChange(newSelection);
   };
 
   const getIconForDevice = (deviceName: string) => {
@@ -56,38 +63,18 @@ const DeviceSelector: React.FC = () => {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold text-white mb-4">Select a Device</h2>
+      <h2 className="text-xl font-semibold text-white mb-4">Select Devices</h2>
       <ul className="grid grid-cols-3 gap-4">
         {devices.map(device => (
           <li
             key={device.id}
-            onClick={() => handleDeviceSelect(device)}
-            className={`p-4 rounded-lg cursor-pointer flex flex-col items-center justify-center text-center ${selectedDevice?.id === device.id ? 'bg-sky-500/20' : 'bg-gray-800'}`}>
+            onClick={() => handleDeviceSelect(device.id)}
+            className={`p-4 rounded-lg cursor-pointer flex flex-col items-center justify-center text-center ${selectedDevices.includes(device.id) ? 'bg-sky-500/20' : 'bg-gray-800'}`}>
             <img src={`/resource/${getIconForDevice(device.name)}`} alt={device.name} className="w-12 h-12 mb-2" />
             <span className="text-white">{device.name}</span>
           </li>
         ))}
       </ul>
-
-      {selectedDevice && (
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold text-white">{selectedDevice.name} Capabilities</h3>
-          <ul className="mt-2 space-y-1 text-gray-200">
-            {selectedDevice.components.map(component =>
-              component.capabilities.map(capability => (
-                <li key={capability.id}>
-                  <strong>{capability.id}</strong>
-                  <ul className="pl-4">
-                    {Object.entries(capability.attributes).map(([attr, { description }]) => (
-                      <li key={attr}>{`${attr}: ${description}`}</li>
-                    ))}
-                  </ul>
-                </li>
-              ))
-            )}
-          </ul>
-        </div>
-      )}
     </div>
   );
 };
