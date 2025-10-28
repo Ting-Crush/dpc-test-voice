@@ -1,0 +1,7 @@
+{
+  "name": "음성 감정 분석기",
+  "description": "음성을 녹음하여 텍스트로 변환한 후, Gemini API를 사용하여 텍스트에 담긴 감정을 분석하고 결과를 시각적으로 보여주는 애플리케이션입니다.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
