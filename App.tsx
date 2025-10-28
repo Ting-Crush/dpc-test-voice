@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { analyzeEmotion, recommendIotDevices, transcribeAudioFile } from './services/geminiService';
-import { EmotionResult, AppStatus, SpeechRecognition } from './types';
+import { EmotionResult, AppStatus, SpeechRecognition, Device } from './types';
 import MicrophoneIcon from './components/icons/MicrophoneIcon';
 import StopIcon from './components/icons/StopIcon';
 import Loader from './components/Loader';
@@ -9,6 +9,7 @@ import UploadIcon from './components/icons/UploadIcon';
 import { audioSamples, AudioSample } from './data/samples';
 import Settings from './pages/Settings';
 import deviceProfiles from './device_profile.json';
+import { getIconForDevice } from './components/deviceUtils';
 
 // Handle browser prefix for SpeechRecognition
 const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -123,7 +124,7 @@ const App: React.FC = () => {
     if (!file) return;
 
     setStatus('analyzing');
-setError(null);
+    setError(null);
     setEmotionResult(null);
     setTranscript('');
 
@@ -188,11 +189,11 @@ setError(null);
     return <Settings onBack={() => setCurrentPage('main')} selectedDevices={selectedDevices} onDeviceSelectionChange={setSelectedDevices} />;
   }
 
-  const getSelectedDeviceNames = () => {
+  const getSelectedDeviceDetails = () => {
     return selectedDevices.map(deviceId => {
-      const device = deviceProfiles.deviceProfiles.find(d => d.id === deviceId);
-      return device ? device.name : 'Unknown Device';
-    });
+      const device = deviceProfiles.deviceProfiles.find(d => d.id === deviceId) as Device | undefined;
+      return device ? { name: device.name, icon: getIconForDevice(device.name) } : null;
+    }).filter(Boolean);
   };
 
   return (
@@ -222,12 +223,17 @@ setError(null);
             {selectedDevices.length > 0 && (
                 <section id="selected-devices" className="mb-8">
                     <div className="bg-gray-800/50 backdrop-blur-sm p-4 rounded-2xl border border-gray-700">
-                        <h3 className="text-sm font-semibold text-gray-300 mb-2">선택된 디바이스:</h3>
-                        <div className="flex flex-wrap gap-2">
-                            {getSelectedDeviceNames().map((name, index) => (
-                                <span key={index} className="bg-sky-500/20 text-sky-300 text-xs font-medium px-2.5 py-1 rounded-full">
-                                    {name}
-                                </span>
+                        <h3 className="text-sm font-semibold text-gray-300 mb-3">선택된 디바이스:</h3>
+                        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
+                            {getSelectedDeviceDetails().map((device, index) => (
+                                device && (
+                                    <div key={index} className="flex flex-col items-center justify-center text-center p-2 rounded-lg bg-sky-500/10">
+                                        <img src={`/resource/${device.icon}`} alt={device.name} className="w-10 h-10 mb-2" />
+                                        <span className="text-sky-300 text-xs font-medium">
+                                            {device.name}
+                                        </span>
+                                    </div>
+                                )
                             ))}
                         </div>
                     </div>

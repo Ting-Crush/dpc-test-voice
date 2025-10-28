@@ -61,16 +61,47 @@ interface SpeechRecognitionErrorEvent extends Event {
   readonly message: string;
 }
 
-export interface SpeechRecognition extends EventTarget {
-  lang: string;
-  interimResults: boolean;
-  continuous: boolean;
-  onresult: (event: SpeechRecognitionEvent) => void;
-  onerror: (event: SpeechRecognitionErrorEvent) => void;
-  onend: () => void;
-  start: () => void;
-  stop: () => void;
+export type AppStatus = 'idle' | 'listening' | 'analyzing' | 'error';
+
+export interface EmotionResult {
+    emotion: string;
+    reason: string;
+    device_control: DeviceControl[] | null;
 }
+
+export interface DeviceControl {
+    device: string;
+    action: string;
+    reason: string;
+}
+
+export interface SpeechRecognition extends EventTarget {
+    lang: string;
+    interimResults: boolean;
+    continuous: boolean;
+    onresult: (event: any) => void;
+    onerror: (event: any) => void;
+    onend: () => void;
+    start: () => void;
+    stop: () => void;
+}
+
+export interface Device {
+    id: string;
+    name: string;
+    components: {
+      id: string;
+      capabilities: {
+        id: string;
+        version: number;
+        attributes: {
+          [key: string]: {
+            description: string;
+          };
+        };
+      }[];
+    }[];
+  }
 
 declare global {
   interface Window {
