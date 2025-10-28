@@ -38,12 +38,12 @@ const App: React.FC = () => {
     try {
       // Step 1: Analyze emotion
       const emotionData = await analyzeEmotion(text);
-      setEmotionResult({ ...emotionData, iot_recommendations: [] }); // Show emotion result first
+      setEmotionResult({ ...emotionData, device_control: null }); // Show emotion result first
 
       // Step 2: Recommend devices based on emotion
-      const recommendationData = await recommendIotDevices(emotionData.emotion, selectedDevices);
+      const deviceControlData = await recommendIotDevices(emotionData.emotion, selectedDevices);
       
-      setEmotionResult(prevResult => prevResult ? { ...prevResult, ...recommendationData } : null);
+      setEmotionResult(prevResult => prevResult ? { ...prevResult, device_control: deviceControlData } : null);
       setStatus('idle');
 
     } catch (e) {

@@ -87,25 +87,79 @@ export const analyzeEmotion = async (text: string): Promise<Omit<EmotionResult, 
   }
 };
 
-export const recommendIotDevices = async (emotion: string, deviceIds: string[]): Promise<{ iot_recommendations: EmotionResult['iot_recommendations'] }> => {
+export const recommendIotDevices = async (emotion: string, deviceIds: string[]): Promise<DeviceControlResult> => {
     const { deviceProfiles } = deviceProfilesData;
     const selectedDevices = deviceProfiles.filter(profile => deviceIds.includes(profile.id));
 
-    const devicePromptPart = selectedDevices.length > 0
-    ? `사용자가 다음의 IoT 기기들을 소유하고 있습니다. 추천 시 이 목록을 최우선으로 고려하되, 만약 감정에 더 적합한 다른 기기가 있다면 자유롭게 추천해주세요:\n${selectedDevices.map(d => `- ${d.name} (기능: ${d.components.flatMap(c => c.capabilities.map(cap => cap.id)).join(', ')})`).join('\n')}`
-    : '사용자가 소유한 특정 기기 정보가 없습니다. 감정에 가장 적합한 일반적인 IoT 기기를 추천해주세요.';
+    const deviceCapabilities = selectedDevices.length > 0
+        ? `\n### 보유 중인 디바이스 목록 및 기능\n${selectedDevices.map(d => `- **${d.name} (ID: ${d.id})**: ${d.components.flatMap(c => c.capabilities.map(cap => cap.id)).join(', ')}`).join('\n')}`
+        : ''
 
-    const systemInstruction = `당신은 사용자의 감정에 기반하여 사용자 경험을 향상시킬 수 있는 지능형 IoT 기기를 추천하는 전문가 AI입니다. ${devicePromptPart} 모든 응답은 한국어로 해주세요.`;
-    console.log("IoT Recommendation System Instruction:", systemInstruction);
+    const systemInstruction = `당신은 사용자의 감정에 기반하여 SmartThings와 연동된 IoT 기기를 제어하는 전문가 AI입니다. 사용자의 감정과 보유 기기 목록을 바탕으로, 집안의 분위기를 개선할 수 있는 구체적인 기기 제어 명령을 생성해야 합니다. 응답은 반드시 지정된 JSON 스키마를 따라야 합니다. 모든 텍스트 설명은 한국어로 제공해주세요.`;
+    
+    const contents = `사용자가 느끼는 감정은 "${emotion}"입니다. ${deviceCapabilities}\n\n위의 디바이스를 이용하여 "${emotion}" 감정을 가진 사용자를 위해 집안의 분위기를 바꿔줘. 먼저 하나의 문장으로 요약해서 보여주고 각 기기별로 자연어로 어떻게 바꾸는지를 설명하고, https://developer.smartthings.com/docs/api/public#tag/Devices/operation/executeDeviceCommands 페이지를 참고해서 커맨드를 만들어서 보여줘\n커맨드는 각 기기별로 id, name, commands를 넣어서 하나의 json파일로 만들어줘`;
+
+    console.log("IoT Recommendation System Instruction:", systemInstruction + contents);
+
+    const deviceControlSchema = {
+        type: Type.OBJECT,
+        properties: {
+            summary: {
+                type: Type.STRING,
+                description: "분위기 전환에 대한 한 문장 요약. 한국어로 응답.",
+            },
+            device_explanations: {
+                type: Type.ARRAY,
+                description: "각 기기별 제어 방법에 대한 자연어 설명. 한국어로 응답.",
+                items: {
+                    type: Type.OBJECT,
+                    properties: {
+                        device_name: { type: Type.STRING, description: "디바이스 이름" },
+                        explanation: { type: Type.STRING, description: "제어 방법에 대한 자연어 설명" },
+                    },
+                    required: ["device_name", "explanation"],
+                }
+            },
+            device_commands: {
+                type: Type.ARRAY,
+                description: "SmartThings API 형식의 기기 제어 커맨드.",
+                items: {
+                    type: Type.OBJECT,
+                    properties: {
+                        id: { type: Type.STRING, description: "디바이스 ID" },
+                        name: { type: Type.STRING, description: "디바이스 이름" },
+                        commands: {
+                            type: Type.ARRAY,
+                            items: {
+                                type: Type.OBJECT,
+                                properties: {
+                                    component: { type: Type.STRING, description: "컴포넌트 ID (보통 'main')" },
+                                    capability: { type: Type.STRING, description: "기능 ID" },
+                                    command: { type: Type.STRING, description: "실행할 커맨드" },
+                                    arguments: { 
+                                        type: Type.STRING, 
+                                        description: "커맨드 인수를 JSON 배열 형식의 문자열로 제공 (예: '[50]', '[{\"hue\": 83}]')"
+                                    }
+                                },
+                                required: ["component", "capability", "command"]
+                            }
+                        }
+                    },
+                    required: ["id", "name", "commands"]
+                }
+            }
+        },
+        required: ["summary", "device_explanations", "device_commands"]
+    };
 
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
-            contents: `사용자가 느끼는 감정은 "${emotion}"입니다. 이 감정에 가장 적합한 IoT 기기를 2-3가지 추천하고 그 이유를 설명해주세요.`,
+            contents,
             config: {
                 systemInstruction,
                 responseMimeType: 'application/json',
-                responseSchema: iotRecommendationSchema,
+                responseSchema: deviceControlSchema,
             },
         });
 

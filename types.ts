@@ -1,12 +1,33 @@
+export interface DeviceCommand {
+  component: string;
+  capability: string;
+  command: string;
+  arguments?: string;
+}
+
+export interface DeviceControl {
+  id: string;
+  name: string;
+  commands: DeviceCommand[];
+}
+
+export interface DeviceExplanation {
+    device_name: string;
+    explanation: string;
+}
+
+export interface DeviceControlResult {
+  summary: string;
+  device_explanations: DeviceExplanation[];
+  device_commands: DeviceControl[];
+}
+
 export interface EmotionResult {
   emotion: string;
   confidence: number;
   reasoning: string;
   emoji: string;
-  iot_recommendations: {
-    device: string;
-    reason: string;
-  }[];
+  device_control: DeviceControlResult | null;
 }
 
 export type AppStatus = 'idle' | 'listening' | 'analyzing' | 'error';
