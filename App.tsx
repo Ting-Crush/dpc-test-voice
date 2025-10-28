@@ -238,8 +238,10 @@ const App: React.FC = () => {
 
             <main className="w-full max-w-5xl mx-auto z-10 flex-grow">
                 <section id="selected-devices" className="mb-8">
+                    <h2 className="flex items-center text-2xl font-semibold text-gray-200 mb-6">
+                        선택된 디바이스
+                    </h2>
                     <div className="bg-black/30 backdrop-blur-lg p-4 rounded-2xl border border-white/20">
-                        <h3 className="text-sm font-semibold text-gray-300 mb-3">선택된 디바이스:</h3>
                         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
                             {getSelectedDeviceDetails().map((device, index) => (
                                 device && (
@@ -283,7 +285,7 @@ const App: React.FC = () => {
                                     className="bg-black/30 backdrop-blur-lg p-6 rounded-2xl text-left border border-white/20 hover:border-sky-400 hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-sky-500 disabled:opacity-50 disabled:cursor-wait disabled:hover:border-white/20 disabled:hover:scale-100"
                                 >
                                     <div className="flex justify-between items-start mb-4">
-                                        <h3 className="text-lg font-bold text-white">{sample.title}</h3>
+                                        <h3 className="text-base font-bold text-white">{sample.title}</h3>
                                         <div className="p-2 bg-gray-700/50 rounded-full">
                                             <Icon className="w-6 h-6 text-sky-400" />
                                         </div>
