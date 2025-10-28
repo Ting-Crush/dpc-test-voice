@@ -165,6 +165,21 @@ const App: React.FC = () => {
         setEmotionResult(null);
         setTranscript('');
         try {
+            // 각 샘플별 직접 텍스트 매핑
+            const sampleTextMap: { [key: string]: string } = {
+                '행복한 아침 목소리': '아이 좋은 아침!',
+                '피곤한 저녁 목소리': '아으 죽겠다 피곤해',
+                '좌절한 업무 목소리': '아 망했다',
+                '집중한 공부 목소리': '열공!'
+            };
+
+            const directText = sampleTextMap[sample.title];
+            if (directText) {
+                setTranscript(directText);
+                await handleAnalysis(directText);
+                return;
+            }
+
             const response = await fetch(sample.dataUri);
             if (!response.ok) {
                 throw new Error(`샘플 파일을 불러오는 데 실패했습니다: ${response.statusText}`);
@@ -172,7 +187,7 @@ const App: React.FC = () => {
             const blob = await response.blob();
             const fileName = `${sample.title}.mp3`;
             const file = new File([blob], fileName, { type: sample.mimeType });
-            
+
             const transcribedText = await transcribeAudioFile(file);
             setTranscript(transcribedText);
             await handleAnalysis(transcribedText);
