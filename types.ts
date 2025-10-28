@@ -2,8 +2,11 @@ export interface EmotionResult {
   emotion: string;
   confidence: number;
   reasoning: string;
-
   emoji: string;
+  iot_recommendations: {
+    device: string;
+    reason: string;
+  }[];
 }
 
 export type AppStatus = 'idle' | 'listening' | 'analyzing' | 'error';
