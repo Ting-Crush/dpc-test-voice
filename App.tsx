@@ -7,15 +7,19 @@ import Loader from './components/Loader';
 import EmotionDisplay from './components/EmotionDisplay';
 import UploadIcon from './components/icons/UploadIcon';
 import { audioSamples, AudioSample } from './data/samples';
+import Settings from './pages/Settings';
 
 // Handle browser prefix for SpeechRecognition
 const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+type Page = 'main' | 'settings';
 
 const App: React.FC = () => {
   const [status, setStatus] = useState<AppStatus>('idle');
   const [transcript, setTranscript] = useState<string>('');
   const [emotionResult, setEmotionResult] = useState<EmotionResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<Page>('main');
 
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);

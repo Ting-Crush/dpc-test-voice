@@ -1,0 +1,310 @@
+{
+  "deviceProfiles": [
+    {
+      "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+      "name": "Smart Bulb",
+      "components": [
+        {
+          "id": "main",
+          "capabilities": [
+            {
+              "id": "switch",
+              "version": 1,
+              "attributes": {
+                "switch": {
+                  "description": "The current state of the switch (on/off)."
+                }
+              }
+            },
+            {
+              "id": "switchLevel",
+              "version": 1,
+              "attributes": {
+                "level": {
+                  "description": "The current brightness level of the light (0-100)."
+                }
+              }
+            },
+            {
+              "id": "colorControl",
+              "version": 1,
+              "attributes": {
+                "color": {
+                  "description": "The current color of the light in hexadecimal format."
+                },
+                "hue": {
+                  "description": "The hue of the color (0-100)."
+                },
+                "saturation": {
+                  "description": "The saturation of the color (0-100)."
+                }
+              }
+            },
+            {
+              "id": "colorTemperature",
+              "version": 1,
+              "attributes": {
+                "colorTemperature": {
+                  "description": "The current color temperature of the light in Kelvin (e.g., 2700K for warm white, 6500K for cool white)."
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "b2c3d4e5-f6a1-b2c3-d4e5-f6a1b2c3d4e5",
+      "name": "Galaxy Home Mini",
+      "components": [
+        {
+          "id": "main",
+          "capabilities": [
+            {
+              "id": "musicPlayer",
+              "version": 1,
+              "attributes": {
+                "status": {
+                  "description": "The current playback status of the music player (playing, paused, stopped)."
+                },
+                "trackDescription": {
+                  "description": "Information about the currently playing track."
+                },
+                "volume": {
+                  "description": "The current volume level of the speaker (0-100)."
+                }
+              }
+            },
+            {
+              "id": "speechSynthesis",
+              "version": 1,
+              "attributes": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c3d4e5f6-a1b2-c3d4-e5f6-a1b2c3d4e5f6",
+      "name": "Blind",
+      "components": [
+        {
+          "id": "main",
+          "capabilities": [
+            {
+              "id": "windowShade",
+              "version": 1,
+              "attributes": {
+                "shade": {
+                  "description": "The current state of the window shade (opening, closing, open, closed)."
+                }
+              }
+            },
+            {
+              "id": "windowShadeLevel",
+              "version": 1,
+              "attributes": {
+                "shadeLevel": {
+                  "description": "The current position of the window shade (0-100, where 100 is fully open)."
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d4e5f6a1-b2c3-d4e5-f6a1-b2c3d4e5f6a1",
+      "name": "Smart TV",
+      "components": [
+        {
+          "id": "main",
+          "capabilities": [
+            {
+              "id": "switch",
+              "version": 1,
+              "attributes": {
+                "switch": {
+                  "description": "The current power state of the TV (on/off)."
+                }
+              }
+            },
+            {
+              "id": "mediaPlayback",
+              "version": 1,
+              "attributes": {
+                "playbackStatus": {
+                  "description": "The current playback status (playing, paused, stopped)."
+                }
+              }
+            },
+            {
+              "id": "mediaInputSource",
+              "version": 1,
+              "attributes": {
+                "inputSource": {
+                  "description": "The current input source of the TV (e.g., HDMI1, Netflix)."
+                }
+              }
+            },
+            {
+              "id": "audioVolume",
+              "version": 1,
+              "attributes": {
+                "volume": {
+                  "description": "The current volume level of the TV (0-100)."
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "e5f6a1b2-c3d4-e5f6-a1b2-c3d4e5f6a1b2",
+      "name": "Thermostat",
+      "components": [
+        {
+          "id": "main",
+          "capabilities": [
+            {
+              "id": "thermostat",
+              "version": 1,
+              "attributes": {
+                "temperature": {
+                  "description": "The current temperature reading."
+                },
+                "heatingSetpoint": {
+                  "description": "The target temperature for heating."
+                },
+                "coolingSetpoint": {
+                  "description": "The target temperature for cooling."
+                },
+                "thermostatMode": {
+                  "description": "The current operating mode of the thermostat (heat, cool, auto, off)."
+                },
+                "thermostatFanMode": {
+                  "description": "The current fan mode (auto, on)."
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "f6a1b2c3-d4e5-f6a1-b2c3-d4e5f6a1b2c3",
+      "name": "Humidifier",
+      "components": [
+        {
+          "id": "main",
+          "capabilities": [
+            {
+              "id": "switch",
+              "version": 1,
+              "attributes": {
+                "switch": {
+                  "description": "The current power state of the humidifier (on/off)."
+                }
+              }
+            },
+            {
+              "id": "humidifierMode",
+              "version": 1,
+              "attributes": {
+                "humidifierMode": {
+                  "description": "The current operating mode of the humidifier (e.g., auto, high, low)."
+                }
+              }
+            },
+            {
+              "id": "relativeHumidityMeasurement",
+              "version": 1,
+              "attributes": {
+                "humidity": {
+                  "description": "The current relative humidity reading."
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a1b2c3d4-e5f6-a1b2-c3d4-e5f6a1b2c3d4",
+      "name": "Diffuser",
+      "components": [
+        {
+          "id": "main",
+          "capabilities": [
+            {
+              "id": "switch",
+              "version": 1,
+              "attributes": {
+                "switch": {
+                  "description": "The current power state of the diffuser (on/off)."
+                }
+              }
+            },
+            {
+              "id": "switchLevel",
+              "version": 1,
+              "attributes": {
+                "level": {
+                  "description": "The intensity level of the diffusion (0-100)."
+                }
+              }
+            },
+            {
+              "id": "colorControl",
+              "version": 1,
+              "attributes": {
+                "color": {
+                  "description": "The current color of the diffuser's light in hexadecimal format."
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d4e5f6a1-b2c3-d4e5-f6a1-b2c3d4e5f6a1",
+      "name": "Robot Vacuum",
+      "components": [
+        {
+          "id": "main",
+          "capabilities": [
+            {
+              "id": "robotCleanerMovement",
+              "version": 1,
+              "attributes": {
+                "robotCleanerMovement": {
+                  "description": "The current movement state of the robot vacuum (cleaning, paused, returning to dock)."
+                }
+              }
+            },
+            {
+              "id": "robotCleanerCleaningMode",
+              "version": 1,
+              "attributes": {
+                "robotCleanerCleaningMode": {
+                  "description": "The current cleaning mode (e.g., auto, spot, edge)."
+                }
+              }
+            },
+            {
+              "id": "battery",
+              "version": 1,
+              "attributes": {
+                "battery": {
+                  "description": "The current battery level of the robot vacuum (0-100)."
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
