@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { analyzeEmotionFromText, transcribeAudioFile } from './services/geminiService';
+import { analyzeEmotion, recommendIotDevices, transcribeAudioFile } from './services/geminiService';
 import { EmotionResult, AppStatus, SpeechRecognition } from './types';
 import MicrophoneIcon from './components/icons/MicrophoneIcon';
 import StopIcon from './components/icons/StopIcon';
@@ -33,10 +33,19 @@ const App: React.FC = () => {
     }
     setStatus('analyzing');
     setError(null);
+    setEmotionResult(null); // Reset previous results
+
     try {
-      const result = await analyzeEmotionFromText(text, selectedDevices);
-      setEmotionResult(result);
+      // Step 1: Analyze emotion
+      const emotionData = await analyzeEmotion(text);
+      setEmotionResult({ ...emotionData, iot_recommendations: [] }); // Show emotion result first
+
+      // Step 2: Recommend devices based on emotion
+      const recommendationData = await recommendIotDevices(emotionData.emotion, selectedDevices);
+      
+      setEmotionResult(prevResult => prevResult ? { ...prevResult, ...recommendationData } : null);
       setStatus('idle');
+
     } catch (e) {
       const errorMessage = e instanceof Error ? e.message : '알 수 없는 오류가 발생했습니다.';
       setError(errorMessage);
