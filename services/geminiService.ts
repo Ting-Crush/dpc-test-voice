@@ -1,5 +1,6 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { EmotionResult } from '../types';
+import deviceProfilesData from '../device_profile.json';
 
 const API_KEY = process.env.API_KEY;
 
@@ -50,13 +51,25 @@ const emotionAnalysisSchema = {
   required: ['emotion', 'confidence', 'reasoning', 'emoji', 'iot_recommendations'],
 };
 
-export const analyzeEmotionFromText = async (text: string): Promise<EmotionResult> => {
+export const analyzeEmotionFromText = async (text: string, deviceIds: string[]): Promise<EmotionResult> => {
+  const { deviceProfiles } = deviceProfilesData;
+
+  const selectedDevices = deviceProfiles.filter(profile => deviceIds.includes(profile.id));
+
+  const devicePromptPart = selectedDevices.length > 0
+    ? `사용자가 다음의 IoT 기기들을 소유하고 있습니다. 추천 시 이 목록을 최우선으로 고려하되, 만약 감정에 더 적합한 다른 기기가 있다면 자유롭게 추천해주세요:\n${selectedDevices.map(d => `- ${d.name} (기능: ${d.components.flatMap(c => c.capabilities.map(cap => cap.id)).join(', ')})`).join('\n')}`
+    : '사용자가 소유한 특정 기기 정보가 없습니다. 감정에 가장 적합한 일반적인 IoT 기기를 추천해주세요.';
+
+  const systemInstruction = `당신은 텍스트에서 인간의 감정을 분석하고, 그 감정에 기반하여 사용자 경험을 향상시킬 수 있는 지능형 IoT 기기를 추천하는 전문가 AI입니다. 제공된 텍스트를 기반으로 주요 감정, 신뢰도 점수, 분석 근거, 감정을 나타내는 이모지를 식별합니다. 또한, 분석된 감정에 가장 적합한 IoT 기기를 2-3가지 추천하고 그 이유를 설명합니다. ${devicePromptPart} 모든 응답은 한국어로 해주세요.`;
+
+  console.log("System Instruction:", systemInstruction);
+
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: `다음 텍스트에서 감정을 분석하고 적절한 IoT 기기를 추천해줘: "${text}"`,
       config: {
-        systemInstruction: `당신은 텍스트에서 인간의 감정을 분석하고, 그 감정에 기반하여 사용자 경험을 향상시킬 수 있는 지능형 IoT 기기를 추천하는 전문가 AI입니다. 제공된 텍스트를 기반으로 주요 감정, 신뢰도 점수, 분석 근거, 감정을 나타내는 이모지를 식별합니다. 또한, 분석된 감정에 가장 적합한 IoT 기기를 2-3가지 추천하고 그 이유를 설명합니다. 모든 응답은 한국어로 해주세요.`,
+        systemInstruction,
         responseMimeType: 'application/json',
         responseSchema: emotionAnalysisSchema,
       },
@@ -105,7 +118,6 @@ export const transcribeAudioFile = async (audioFile: File): Promise<string> => {
     }
     return transcription;
 
-// Fix: Added missing opening brace for the catch block.
   } catch (error) {
     console.error("Error transcribing audio:", error);
     if (error instanceof Error) {

@@ -34,7 +34,7 @@ const App: React.FC = () => {
     setStatus('analyzing');
     setError(null);
     try {
-      const result = await analyzeEmotionFromText(text);
+      const result = await analyzeEmotionFromText(text, selectedDevices);
       setEmotionResult(result);
       setStatus('idle');
     } catch (e) {
@@ -42,7 +42,7 @@ const App: React.FC = () => {
       setError(errorMessage);
       setStatus('error');
     }
-  }, []);
+  }, [selectedDevices]);
 
   useEffect(() => {
     if (!SpeechRecognitionAPI) {
