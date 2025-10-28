@@ -8,6 +8,7 @@ import EmotionDisplay from './components/EmotionDisplay';
 import UploadIcon from './components/icons/UploadIcon';
 import { audioSamples, AudioSample } from './data/samples';
 import Settings from './pages/Settings';
+import deviceProfiles from './device_profile.json';
 
 // Handle browser prefix for SpeechRecognition
 const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -122,7 +123,7 @@ const App: React.FC = () => {
     if (!file) return;
 
     setStatus('analyzing');
-    setError(null);
+setError(null);
     setEmotionResult(null);
     setTranscript('');
 
@@ -187,6 +188,13 @@ const App: React.FC = () => {
     return <Settings onBack={() => setCurrentPage('main')} selectedDevices={selectedDevices} onDeviceSelectionChange={setSelectedDevices} />;
   }
 
+  const getSelectedDeviceNames = () => {
+    return selectedDevices.map(deviceId => {
+      const device = deviceProfiles.deviceProfiles.find(d => d.id === deviceId);
+      return device ? device.name : 'Unknown Device';
+    });
+  };
+
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-start p-4 font-sans relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-grid-sky-500/[0.05]"></div>
@@ -211,6 +219,20 @@ const App: React.FC = () => {
         </header>
 
         <main className="w-full max-w-5xl mx-auto z-10 flex-grow">
+            {selectedDevices.length > 0 && (
+                <section id="selected-devices" className="mb-8">
+                    <div className="bg-gray-800/50 backdrop-blur-sm p-4 rounded-2xl border border-gray-700">
+                        <h3 className="text-sm font-semibold text-gray-300 mb-2">선택된 디바이스:</h3>
+                        <div className="flex flex-wrap gap-2">
+                            {getSelectedDeviceNames().map((name, index) => (
+                                <span key={index} className="bg-sky-500/20 text-sky-300 text-xs font-medium px-2.5 py-1 rounded-full">
+                                    {name}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
             <section id="sample-selection" className="mb-12">
                 <h2 className="flex items-center text-2xl font-semibold text-gray-200 mb-6">
                     <span className="flex items-center justify-center w-8 h-8 mr-4 bg-sky-500 text-white rounded-full font-bold">1</span>
