@@ -272,7 +272,7 @@ const App: React.FC = () => {
                 </section>
                 <section id="sample-selection" className="mb-12">
                     <h2 className="flex items-center text-2xl font-semibold text-gray-200 mb-6">
-                        예제 음성 샘플 선택
+                        음성 예제
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {audioSamples.map((sample) => {
@@ -297,7 +297,7 @@ const App: React.FC = () => {
                     </div>
                 </section>
 
-                <section id="analysis-result" ref={analysisResultRef} className="flex flex-col items-center justify-center min-h-[300px] mb-12">
+                <section id="analysis-result" ref={analysisResultRef} className="flex flex-col items-center justify-center min-h-[300px] mb-4">
                     {status === 'analyzing' && <Loader />}
                     {!emotionResult && status !== 'analyzing' && getStatusMessage() && (
                         <div className="text-center text-gray-400 p-8 bg-black/30 backdrop-blur-lg rounded-2xl w-full max-w-md border border-white/20">
