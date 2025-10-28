@@ -223,8 +223,12 @@ const App: React.FC = () => {
     const getSelectedDeviceDetails = () => {
         return selectedDevices.map(deviceId => {
             const device = deviceProfiles.deviceProfiles.find(d => d.id === deviceId) as Device | undefined;
-            return device ? { name: device.name, icon: getIconForDevice(device.name) } : null;
+            return device ? { id: deviceId, name: device.name, icon: getIconForDevice(device.name) } : null;
         }).filter(Boolean);
+    };
+
+    const handleRemoveDevice = (deviceId: string) => {
+        setSelectedDevices(prev => prev.filter(id => id !== deviceId));
     };
 
     return (
@@ -260,7 +264,16 @@ const App: React.FC = () => {
                         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
                             {getSelectedDeviceDetails().map((device, index) => (
                                 device && (
-                                    <div key={index} className="flex flex-col items-center justify-center text-center p-2 rounded-lg bg-sky-500/10">
+                                    <div key={index} className="relative flex flex-col items-center justify-center text-center p-2 rounded-lg bg-sky-500/10 group">
+                                        <button
+                                            onClick={() => handleRemoveDevice(device.id)}
+                                            className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                            aria-label={`${device.name} 제거`}
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
                                         <img src={`/resource/${device.icon}`} alt={device.name} className="w-10 h-10 mb-2" />
                                         <span className="text-sky-300 text-xs font-medium">
                                             {device.name}
